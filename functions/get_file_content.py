@@ -1,5 +1,7 @@
 import os
 from functions.config import *
+from google import genai # type: ignore
+from google.genai import types # type: ignore
 
 def get_file_content(working_directory, file_path):
     abs_work = os.path.abspath(working_directory)
@@ -20,3 +22,18 @@ def get_file_content(working_directory, file_path):
             file_content_string += f'[...File "{file_path}" truncated at {MAX_CHARS} characters]'
             
         return file_content_string
+    
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Returns the content of a file, constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The File to get content from, relative to the working directory. If not provided, returns an error.",
+            ),
+        },
+    ),
+)

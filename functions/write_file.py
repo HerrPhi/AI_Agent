@@ -1,5 +1,7 @@
 import os
 #import get_files_info
+from google import genai # type: ignore
+from google.genai import types # type: ignore
 
 def write_file(working_directory, file_path, content):
     abs_work = os.path.abspath(working_directory)
@@ -19,3 +21,22 @@ def write_file(working_directory, file_path, content):
         return f"Error: {e}"
 
     return f'Successfully wrote to "{full_path}" ({len(content)} characters written)'
+
+
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes content to a specified file, constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The file path of the file, relative to the working directory. Must be provided.",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="Content that will be writen in the file.",
+            ),
+        },
+    ),
+)
